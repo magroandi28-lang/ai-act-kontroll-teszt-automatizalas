@@ -101,6 +101,36 @@ public class AiActLoginTest {
 
         Assertions.assertTrue(driver.getCurrentUrl().contains("/jelszo"));
     }
+    @Test
+    void jelszoMegjelenitesGombLathato() {
+        WebElement szemGomb = driver.findElement(By.className("bk-szem"));
+        Assertions.assertTrue(szemGomb.isDisplayed());
+    }
+    @Test
+    void szemGombMegjelenitiAJelszot() {
+        WebElement jelszoMezo = driver.findElement(By.id("password"));
+        jelszoMezo.sendKeys("Titok123");
+        Assertions.assertEquals("password", jelszoMezo.getDomAttribute("type"));
+        driver.findElement(By.className("bk-szem")).click();
+        Assertions.assertEquals("text", jelszoMezo.getDomAttribute("type"));
+    }
+    @Test
+    void belepesGombLathato() {
+        WebElement belepesGomb = driver.findElement(By.className("bk-fo-gomb"));
+        Assertions.assertTrue(belepesGomb.isDisplayed());
+    }
+    @Test
+    void sikeresBelepesAtviszAVezerlopultra() {
+        driver.findElement(By.id("email")).sendKeys("magroandi28+teszt@gmail.com");
+        driver.findElement(By.id("password")).sendKeys("tesztteszt");
+        driver.findElement(By.name("privacy")).click();
+        driver.findElement(By.className("bk-fo-gomb")).click();
+
+        WebDriverWait varakozas = new WebDriverWait(driver, Duration.ofSeconds(15));
+        varakozas.until(ExpectedConditions.urlContains("/vezerlopult"));
+
+        Assertions.assertTrue(driver.getCurrentUrl().contains("/vezerlopult"));
+    }
     @AfterEach
     void bongeszoBezarasa() {
         driver.quit();
