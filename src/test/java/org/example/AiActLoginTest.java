@@ -131,6 +131,18 @@ public class AiActLoginTest {
 
         Assertions.assertTrue(driver.getCurrentUrl().contains("/vezerlopult"));
     }
+    @Test
+    void adatkezelesLinkLathato() {
+        WebElement adatkezelesLink = driver.findElement(By.linkText("adatkezelési nyilatkozatot"));
+        Assertions.assertTrue(adatkezelesLink.isDisplayed());
+    }
+    @Test
+    void adatkezelesLinkreKattintvaMegnyilikAzOldal() {
+        driver.findElement(By.linkText("adatkezelési nyilatkozatot")).click();
+        WebDriverWait varakozas = new WebDriverWait(driver, Duration.ofSeconds(10));
+        varakozas.until(ExpectedConditions.urlContains("/adatkezeles"));
+        Assertions.assertTrue(driver.getCurrentUrl().contains("/adatkezeles"));
+    }
     @AfterEach
     void bongeszoBezarasa() {
         driver.quit();
