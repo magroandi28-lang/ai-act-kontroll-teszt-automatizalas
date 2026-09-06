@@ -7,6 +7,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import java.time.Duration;
 public class AiActLoginTest {
     private WebDriver driver;
     @BeforeEach
@@ -67,6 +70,36 @@ public class AiActLoginTest {
                 "A demó indításához fogadd el az adatkezelési nyilatkozatot.",
                 uzenet.getText()
         );
+    }
+    @Test
+    void regisztracioLinkAHelyesOldalraMutat() {
+        WebElement regisztracioLink = driver.findElement(By.linkText("Regisztráció"));
+        Assertions.assertTrue(regisztracioLink.isDisplayed());
+        String href = regisztracioLink.getDomAttribute("href");
+        Assertions.assertTrue(href.endsWith("/regisztracio"));
+    }
+    @Test
+    void regisztracioLinkreKattintvaMegnyilikAzOldal() {
+        driver.findElement(By.linkText("Regisztráció")).click();
+
+        WebDriverWait varakozas = new WebDriverWait(driver, Duration.ofSeconds(10));
+        varakozas.until(ExpectedConditions.urlContains("/regisztracio"));
+
+        Assertions.assertTrue(driver.getCurrentUrl().contains("/regisztracio"));
+    }
+    @Test
+    void elfelejtettJelszoLinkLathato() {
+        WebElement elfelejtettJelszoLink = driver.findElement(By.linkText("Elfelejtett jelszó?"));
+        Assertions.assertTrue(elfelejtettJelszoLink.isDisplayed());
+    }
+    @Test
+    void elfelejtettJelszoLinkreKattintvaMegnyilikAzOldal() {
+        driver.findElement(By.linkText("Elfelejtett jelszó?")).click();
+
+        WebDriverWait varakozas = new WebDriverWait(driver, Duration.ofSeconds(10));
+        varakozas.until(ExpectedConditions.urlContains("/jelszo"));
+
+        Assertions.assertTrue(driver.getCurrentUrl().contains("/jelszo"));
     }
     @AfterEach
     void bongeszoBezarasa() {
