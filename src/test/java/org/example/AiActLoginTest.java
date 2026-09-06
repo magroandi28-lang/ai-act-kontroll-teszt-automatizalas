@@ -12,10 +12,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
 public class AiActLoginTest {
     private WebDriver driver;
+    private BelepesOldal belepesOldal;
     @BeforeEach
     void bongeszoEsOldalMegnyitasa() {
         driver = new ChromeDriver();
         driver.get("https://energia-ai-kontroll.vercel.app");
+        belepesOldal = new BelepesOldal(driver);
     }
     @Test
     void emailMezoLathatoAzOldalon(){
@@ -142,6 +144,10 @@ public class AiActLoginTest {
         WebDriverWait varakozas = new WebDriverWait(driver, Duration.ofSeconds(10));
         varakozas.until(ExpectedConditions.urlContains("/adatkezeles"));
         Assertions.assertTrue(driver.getCurrentUrl().contains("/adatkezeles"));
+    }
+    @Test
+    void nyelvvaltoLatszik() {
+        Assertions.assertTrue(belepesOldal.nyelvvaltoLathato());
     }
     @AfterEach
     void bongeszoBezarasa() {
