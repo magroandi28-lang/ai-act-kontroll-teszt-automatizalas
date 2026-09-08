@@ -5,7 +5,7 @@ import com.google.api.services.gmail.model.Profile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
-public class GmailKapcsolatTest {
+public class GmailKliensTest {
 
     @Test
     void kapcsolodikAGmailhez() throws Exception {

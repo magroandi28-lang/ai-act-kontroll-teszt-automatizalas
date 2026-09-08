@@ -7,10 +7,7 @@ public class BelepesOldal {
     public BelepesOldal(WebDriver driver) {
         this.driver = driver;
     }
-    public void beirEmail(String szoveg) {
-        driver.findElement(By.id("email")).sendKeys(szoveg);
-    }
-    public boolean nyelvvaltoLathato() {
+        public boolean nyelvvaltoLathato() {
         return driver.findElement(By.cssSelector("button[aria-label='Magyar']")).isDisplayed();
     }
 }
