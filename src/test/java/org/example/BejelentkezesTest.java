@@ -14,15 +14,15 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
 
 @DisplayName("Belépő oldal – Bejelentkezes és Adatkezelési nyilatkozat")
-public class Bejelentkezes {
+public class BejelentkezesTest {
     private WebDriver driver;
-    private BelepesOldal belepesOldal;
+    private BelepesPom belepesOldal;
 
     @BeforeEach
     void bongeszoEsOldalMegnyitasa() {
         driver = new ChromeDriver();
         driver.get(Konfig.alapUrl());
-        belepesOldal = new BelepesOldal(driver);
+        belepesOldal = new BelepesPom(driver);
     }
 
     @Test

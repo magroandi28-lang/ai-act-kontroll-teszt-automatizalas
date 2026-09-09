@@ -30,4 +30,8 @@ public class Konfig {
     public static String alapUrl() { return ertek("alapUrl", "TEST_ALAP_URL"); }
     public static String email()   { return ertek("tesztEmail", "TEST_EMAIL"); }
     public static String jelszo()  { return ertek("tesztJelszo", "TEST_JELSZO"); }
+    public static String szervezetId()   { return ertek("tesztSzervezetId", "TEST_SZERVEZET_ID"); }
+    public static String felhasznaloId() { return ertek("tesztFelhasznaloId", "TEST_FELHASZNALO_ID"); }
+    public static String supabaseUrl()       { return ertek("supabaseUrl", "SUPABASE_URL"); }
+    public static String supabaseSecretKey() { return ertek("supabaseSecretKey", "SUPABASE_SECRET_KEY"); }
 }

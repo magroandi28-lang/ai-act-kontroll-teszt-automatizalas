@@ -12,7 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
 
-public class Kijelentkezes {
+public class KijelentkezesTest {
 
     private WebDriver driver;
     private WebDriverWait varakozas;
@@ -20,15 +20,8 @@ public class Kijelentkezes {
     @BeforeEach
     void belepesAVezerlopultra() {
         driver = new ChromeDriver();
-        driver.get(Konfig.alapUrl());
+        new BelepesPom(driver).belepes();
         varakozas = new WebDriverWait(driver, Duration.ofSeconds(15));
-
-        varakozas.until(ExpectedConditions.elementToBeClickable(By.id("email"))).sendKeys(Konfig.email());
-        driver.findElement(By.id("password")).sendKeys(Konfig.jelszo());
-        varakozas.until(ExpectedConditions.elementToBeClickable(By.name("privacy"))).click();
-        varakozas.until(ExpectedConditions.elementToBeClickable(By.className("bk-fo-gomb"))).click();
-
-        varakozas.until(ExpectedConditions.urlContains("/vezerlopult"));
     }
 
     @Test

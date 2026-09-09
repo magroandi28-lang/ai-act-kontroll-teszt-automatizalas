@@ -9,7 +9,7 @@ public class GmailKliensTest {
 
     @Test
     void kapcsolodikAGmailhez() throws Exception {
-        Gmail gmail = GmailKapcsolat.letrehoz();
+        Gmail gmail = GmailKliens.letrehoz();
         Profile profil = gmail.users().getProfile("me").execute();
 
         System.out.println("Csatlakozva ehhez: " + profil.getEmailAddress());

@@ -11,6 +11,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
+import org.junit.jupiter.api.DisplayName;
 public class RegisztracioTest {
 
     private WebDriver driver;
@@ -105,10 +106,13 @@ public class RegisztracioTest {
         Assertions.assertEquals("A regisztrációhoz fogadd el az adatkezelési nyilatkozatot.", uzenet.getText());
     }
     @Test
+    @DisplayName("MT-AUTH-001 · AUTH-REQ-001 – sikeres regisztráció megerősítő levelet ígér")
     void sikeresRegisztracio() {
+        String egyediEmail = "magroandi28+teszt" + System.currentTimeMillis() + "@gmail.com";
+
         driver.findElement(By.id("fullName")).sendKeys("Teszt Elek");
         driver.findElement(By.id("organisationName")).sendKeys("Teszt Kft.");
-        driver.findElement(By.id("registerEmail")).sendKeys("magroandi28+teszt@gmail.com");
+        driver.findElement(By.id("registerEmail")).sendKeys(egyediEmail);
         driver.findElement(By.id("registerPassword")).sendKeys("test1234");
         driver.findElement(By.id("passwordAgain")).sendKeys("test1234");
         driver.findElement(By.name("privacy")).click();
@@ -119,7 +123,6 @@ public class RegisztracioTest {
         WebElement sikeresUzenet = varakozas.until(
                 ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[role='status']"))
         );
-
         Assertions.assertTrue(sikeresUzenet.getText().contains("A regisztráció elkészült"));
     }
     @AfterEach

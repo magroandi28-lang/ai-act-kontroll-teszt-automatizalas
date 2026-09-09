@@ -19,15 +19,7 @@ public class VezerlopultTest {
     @BeforeEach
     void belepesAVezerlopultra() {
         driver = new ChromeDriver();
-        driver.get(Konfig.alapUrl());
-
-        WebDriverWait varakozas = new WebDriverWait(driver, Duration.ofSeconds(15));
-        varakozas.until(ExpectedConditions.elementToBeClickable(By.id("email"))).sendKeys(Konfig.email());
-        driver.findElement(By.id("password")).sendKeys(Konfig.jelszo());
-        varakozas.until(ExpectedConditions.elementToBeClickable(By.name("privacy"))).click();
-        varakozas.until(ExpectedConditions.elementToBeClickable(By.className("bk-fo-gomb"))).click();
-
-        varakozas.until(ExpectedConditions.urlContains("/vezerlopult"));
+        new BelepesPom(driver).belepes();
     }
 
     @Test
