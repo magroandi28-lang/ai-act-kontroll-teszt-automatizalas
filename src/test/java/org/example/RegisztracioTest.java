@@ -14,7 +14,6 @@ import java.time.Duration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 
-@Tag("flaky")
 public class RegisztracioTest {
 
     private WebDriver driver;
@@ -108,6 +107,7 @@ public class RegisztracioTest {
         WebElement uzenet = driver.findElement(By.cssSelector("[role='alert']"));
         Assertions.assertEquals("A regisztrációhoz fogadd el az adatkezelési nyilatkozatot.", uzenet.getText());
     }
+    @Tag("flaky")
     @Test
     @DisplayName("MT-AUTH-001 · AUTH-REQ-001 – sikeres regisztráció megerősítő levelet ígér")
     void sikeresRegisztracio() {
