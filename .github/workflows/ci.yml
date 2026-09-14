@@ -5,23 +5,26 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-  workflow_dispatch:        # kézzel is indítható a GitHub felületéről
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Kód letöltése
+      - name: Kod letoltese
         uses: actions/checkout@v4
 
-      - name: JDK 21 beállítása
+      - name: JDK 21 beallitasa
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
           cache: maven
 
-      - name: Tesztek futtatása (Gmail kihagyva, virtuális kijelzővel)
+      - name: Tesztek futtatasa (Gmail es flaky kihagyva, virtualis kijelzovel)
         env:
           TEST_ALAP_URL:       ${{ secrets.TEST_ALAP_URL }}
           TEST_EMAIL:          ${{ secrets.TEST_EMAIL }}
@@ -32,9 +35,20 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: xvfb-run -a mvn -B clean test -DexcludedGroups=gmail,flaky
 
-      - name: Allure eredmény feltöltése (letölthető artifact)
-        if: always()          # akkor is fusson, ha a teszt bukott
+      - name: Allure riport generalasa
+        if: always()
+        run: mvn allure:report
+
+      - name: Allure eredmeny feltoltese (artifact)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: target/allure-results
+
+      - name: Riport publikalasa GitHub Pages-re
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: target/site/allure-maven-plugin
