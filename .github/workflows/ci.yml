@@ -39,12 +39,12 @@ jobs:
         if: always()
         run: mvn allure:report
 
-      - name: Allure eredmeny feltoltese (artifact)
+      - name: Titkos kulcs eltavolitasa a riportbol
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-results
-          path: target/allure-results
+        env:
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: |
+          grep -rl "$SUPABASE_SECRET_KEY" target/site 2>/dev/null | xargs -r sed -i "s|$SUPABASE_SECRET_KEY|***|g" || true
 
       - name: Riport publikalasa GitHub Pages-re
         if: always()
