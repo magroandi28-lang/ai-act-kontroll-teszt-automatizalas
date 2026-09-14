@@ -88,4 +88,92 @@ public class SupabaseAdmin {
             throw new RuntimeException("Seed törlés hiba: " + valasz.statusCode() + " – " + valasz.body());
         }
     }
+
+    public static String tagsagSzerepkor(String userId) throws Exception {
+        GsonFactory json = GsonFactory.getDefaultInstance();
+
+        HttpRequest keres = HttpRequest.newBuilder()
+                .uri(URI.create(Konfig.supabaseUrl()
+                        + "/rest/v1/aic_organisation_members?user_id=eq." + userId
+                        + "&select=member_role"))
+                .header("apikey", Konfig.supabaseSecretKey())
+                .header("Authorization", "Bearer " + Konfig.supabaseSecretKey())
+                .header("Accept", "application/vnd.pgrst.object+json")
+                .GET()
+                .build();
+
+        HttpResponse<String> valasz = HttpClient.newHttpClient().send(keres, HttpResponse.BodyHandlers.ofString());
+        if (valasz.statusCode() >= 300) {
+            throw new RuntimeException("Tagság lekérdezés hiba: " + valasz.statusCode() + " – " + valasz.body());
+        }
+        GenericJson sor = json.createJsonParser(valasz.body()).parse(GenericJson.class);
+        return (String) sor.get("member_role");
+    }
+
+    public static void torolFelhasznalo(String userId) throws Exception {
+        HttpRequest keres = HttpRequest.newBuilder()
+                .uri(URI.create(Konfig.supabaseUrl() + "/auth/v1/admin/users/" + userId))
+                .header("apikey", Konfig.supabaseSecretKey())
+                .header("Authorization", "Bearer " + Konfig.supabaseSecretKey())
+                .DELETE()
+                .build();
+
+        HttpResponse<String> valasz = HttpClient.newHttpClient().send(keres, HttpResponse.BodyHandlers.ofString());
+        if (valasz.statusCode() >= 300) {
+            throw new RuntimeException("Felhasználó törlés hiba: " + valasz.statusCode() + " – " + valasz.body());
+        }
+    }
+
+    public static boolean rendszerLetezik(String nev) throws Exception {
+        HttpRequest keres = HttpRequest.newBuilder()
+                .uri(URI.create(Konfig.supabaseUrl()
+                        + "/rest/v1/aic_ai_systems?name=eq." + nev.replace(" ", "%20")
+                        + "&organisation_id=eq." + Konfig.szervezetId()
+                        + "&inventory_status=eq.active&select=id"))
+                .header("apikey", Konfig.supabaseSecretKey())
+                .header("Authorization", "Bearer " + Konfig.supabaseSecretKey())
+                .GET()
+                .build();
+
+        HttpResponse<String> valasz = HttpClient.newHttpClient().send(keres, HttpResponse.BodyHandlers.ofString());
+        if (valasz.statusCode() >= 300) {
+            throw new RuntimeException("Rendszer lekérdezés hiba: " + valasz.statusCode() + " – " + valasz.body());
+        }
+        return !valasz.body().trim().equals("[]");
+    }
+
+    public static void importTakaritas() throws Exception {
+        HttpRequest keres = HttpRequest.newBuilder()
+                .uri(URI.create(Konfig.supabaseUrl() + "/rest/v1/aic_ai_systems?name=like.IMPORT-TESZT*"))
+                .header("apikey", Konfig.supabaseSecretKey())
+                .header("Authorization", "Bearer " + Konfig.supabaseSecretKey())
+                .DELETE()
+                .build();
+
+        HttpResponse<String> valasz = HttpClient.newHttpClient().send(keres, HttpResponse.BodyHandlers.ofString());
+        if (valasz.statusCode() >= 300) {
+            throw new RuntimeException("Import takarítás hiba: " + valasz.statusCode() + " – " + valasz.body());
+        }
+    }
+
+    public static String rendszerId(String nev) throws Exception {
+        HttpRequest keres = HttpRequest.newBuilder()
+                .uri(URI.create(Konfig.supabaseUrl()
+                        + "/rest/v1/aic_ai_systems?name=eq." + nev.replace(" ", "%20")
+                        + "&organisation_id=eq." + Konfig.szervezetId()
+                        + "&inventory_status=eq.active&select=id"))
+                .header("apikey", Konfig.supabaseSecretKey())
+                .header("Authorization", "Bearer " + Konfig.supabaseSecretKey())
+                .header("Accept", "application/vnd.pgrst.object+json")
+                .GET()
+                .build();
+
+        HttpResponse<String> valasz = HttpClient.newHttpClient().send(keres, HttpResponse.BodyHandlers.ofString());
+        if (valasz.statusCode() >= 300) {
+            throw new RuntimeException("Rendszer id lekérdezés hiba: " + valasz.statusCode() + " – " + valasz.body());
+        }
+        GsonFactory json = GsonFactory.getDefaultInstance();
+        GenericJson sor = json.createJsonParser(valasz.body()).parse(GenericJson.class);
+        return (String) sor.get("id");
+    }
 }
