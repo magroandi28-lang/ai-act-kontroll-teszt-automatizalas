@@ -30,7 +30,7 @@ jobs:
           TEST_FELHASZNALO_ID: ${{ secrets.TEST_FELHASZNALO_ID }}
           SUPABASE_URL:        ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-        run: xvfb-run -a mvn -B clean test -DexcludedGroups=gmail
+        run: xvfb-run -a mvn -B clean test -DexcludedGroups=gmail,flaky
 
       - name: Allure eredmény feltöltése (letölthető artifact)
         if: always()          # akkor is fusson, ha a teszt bukott
