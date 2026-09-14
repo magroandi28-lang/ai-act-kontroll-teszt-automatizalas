@@ -1,5 +1,5 @@
 package org.example;
-
+import io.qameta.allure.Issue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
+import org.junit.jupiter.api.Tag;
 
+@Tag("gmail")
 public class RegisztracioMegerositesTest {
 
     private WebDriver driver;
@@ -23,8 +25,9 @@ public class RegisztracioMegerositesTest {
         varakozas = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
+    @Issue("KAN-5")
     @Test
-    @DisplayName("MT-AUTH-004/005 – regisztráció + e-mailes megerősítés (Gmail API)")
+    @DisplayName("MT-AUTH-004/005 – regisztráció + e-mailes megerősítés (Gmail API)[KAN-5]")
     void regisztracioMegerositoLinkkel() throws Exception {
         String egyediEmail = "magroandi28+teszt" + System.currentTimeMillis() + "@gmail.com";
 

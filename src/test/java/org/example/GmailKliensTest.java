@@ -3,8 +3,10 @@ package org.example;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Profile;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Assertions;
 
+@Tag("gmail")
 public class GmailKliensTest {
 
     @Test

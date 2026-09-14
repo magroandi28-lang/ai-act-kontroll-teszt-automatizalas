@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:        # kézzel is indítható a GitHub felületéről
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kód letöltése
+        uses: actions/checkout@v4
+
+      - name: JDK 21 beállítása
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Tesztek futtatása (Gmail kihagyva, virtuális kijelzővel)
+        env:
+          TEST_ALAP_URL:       ${{ secrets.TEST_ALAP_URL }}
+          TEST_EMAIL:          ${{ secrets.TEST_EMAIL }}
+          TEST_JELSZO:         ${{ secrets.TEST_JELSZO }}
+          TEST_SZERVEZET_ID:   ${{ secrets.TEST_SZERVEZET_ID }}
+          TEST_FELHASZNALO_ID: ${{ secrets.TEST_FELHASZNALO_ID }}
+          SUPABASE_URL:        ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: xvfb-run -a mvn -B clean test -DexcludedGroups=gmail
+
+      - name: Allure eredmény feltöltése (letölthető artifact)
+        if: always()          # akkor is fusson, ha a teszt bukott
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: target/allure-results
