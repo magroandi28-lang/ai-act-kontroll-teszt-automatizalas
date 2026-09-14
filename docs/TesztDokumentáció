@@ -1,0 +1,38 @@
+# Teszt-dokumentáció (követhetőségi mátrix)
+
+Projekt: AI Act Kontroll – teszt-automatizálás
+Típus: Felületi = Selenium (böngésző), API = RestAssured (Supabase REST/Auth)
+
+| Teszt (osztály) | Típus | Követelmény | Mit ellenőriz | Hibajegy |
+|---|---|---|---|---|
+| BejelentkezesTest | Felületi | LOGIN-REQ-001/002/003/005/006, DEMO-REQ-001, PRIVACY-REQ-001, LOGIN-REQ-010 | Belépő oldal elemei, mezők írhatósága, nyelvváltó, jelszó-megjelenítés, adatkezelési link és oldal, demó figyelmeztetés, sikeres belépés a vezérlőpultra | |
+| RegisztracioTest | Felületi | AUTH-REQ-001 | Regisztrációs űrlap mezői és validációi (üres mezők, túl rövid jelszó, eltérő jelszó, adatkezelés nélkül), sikeres regisztráció visszajelzése | |
+| RegisztracioAdminLinkkelTest | Felületi | MT-AUTH-006 | Regisztráció + megerősítés admin linkkel (e-mail nélkül, stabil) | |
+| RegisztracioMegerositesTest | Felületi (Gmail) | MT-AUTH-004/005 | Regisztráció e-mailes megerősítése Gmail API-val | KAN-5 |
+| VezerlopultTest | Felületi | DASH-REQ-001/002 | A négy fő modul (kártya) láthatósága és navigációja | |
+| RendszerListaTest | Felületi | SYSTEM-REQ-003 | Rendszerek listázása, lapozás (oldalanként max 5) | |
+| UjRendszeradatFelvitelTest | Felületi | CREATE-REQ-006/007 | Új MI-rendszer létrehozása és mentése | |
+| RendszerImportTest | Felületi | IMPORT-REQ-001/007 | Importsablon letöltése; kitöltött sablon importja a rendszerek közé | KAN-6 |
+| RendszerModositasTest | Felületi | EDIT-REQ-001 | Rendszer nevének módosítása és a változás ellenőrzése | |
+| RendszerTorlesTest | Felületi | EDIT-REQ-004 | Rendszer törlése/archiválása és a tényleges eltűnés | |
+| AdatMentesFeluletrolTest | Felületi | POLICY-REQ-005 | Szabályzat mentése felületről (PDF/nyomtatás) | |
+| KijelentkezesTest | Felületi | SESSION-REQ-001 | Kijelentkezés; védett oldal elérhetetlensége utána | |
+| DemoIzolacioTest | Felületi | MT-DEMO-005 | Demó belépés csak editor jogot ad (nem owner) | KAN-4 |
+| GmailKliensTest | Segéd (Gmail) | – | Gmail API kapcsolat ellenőrzése | |
+| ApiJogosultsagTest | API | SEC-REQ-002, API-REQ-002 | Jogosultsági kapu: érvényes kulccsal 200, kulcs nélkül 401 | |
+| ApiRendszerekTest | API | GEN-REQ-002, SYSTEM-REQ-001, SEC-REQ-009 | Szervezeti adatizoláció: csak a saját szervezet adatai | |
+| ApiCrudTest | API | SEC-REQ-006, API-REQ-002 | Teljes CRUD-életciklus + negatív módosításvédelem (400/P0001) | |
+| ApiBejelentkezettModositasTest | API | EDIT-REQ-001, SEC-REQ-006, API-REQ-005 | Pozitív módosítás bejelentkezett felhasználó tokenjével | |
+
+## Segédosztályok (nem teszt)
+- BelepesPom – belépő oldal Page Object
+- Konfig – konfiguráció (környezeti változó / test.properties)
+- SupabaseAdmin – service_role REST hívások, tesztadat-seed
+- UjrahasznosithatoLepesek – közös, újrahasznosított lépések
+- GmailKliens – Gmail API kapcsolat
+- Képernyőkép-mentő – felületi teszt bukásakor automatikus képernyőkép
+
+## Megjegyzés a CI-hoz
+A pipeline a `@Tag("gmail")` és `@Tag("flaky")` tesztet kihagyja (külső, megbízhatatlan függés):
+GmailKliensTest, RegisztracioMegerositesTest, valamint a RegisztracioTest#sikeresRegisztracio.
+Ezek helyben futtathatók; a lefedettséget stabil tesztek pótolják.
