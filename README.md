@@ -1,5 +1,9 @@
 # AI Act Kontroll – Teszt-automatizálás
 
+[![CI](https://github.com/magroandi28-lang/ai-act-kontroll-teszt-automatizalas/actions/workflows/ci.yml/badge.svg)](https://github.com/magroandi28-lang/ai-act-kontroll-teszt-automatizalas/actions/workflows/ci.yml)
+
+📊 **Élő tesztriport (Allure):** https://magroandi28-lang.github.io/ai-act-kontroll-teszt-automatizalas/
+
 Automatizált teszt-suite az **AI Act Kontroll** webalkalmazáshoz.
 Felületi (Selenium) és API (RestAssured) tesztek JUnit 5 alapon, Allure riporttal és GitHub Actions CI-vel.
 
