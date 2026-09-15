@@ -1,6 +1,6 @@
 # Tesztterv — AI Act Kontroll
 
-**Projekt:** AI Act Kontroll – vállalati MI-megfelelőségi alkalmazás tesztautomatizálása
+**Projekt:** AI Act Kontroll – vállalati MI-megfelelőségi alkalmazás tesztelése
 **Tesztelt rendszer (SUT):** https://energia-ai-kontroll.vercel.app
 **Készítette:** Varga Andrea
 **Dokumentum típusa:** Tesztterv (a tesztelés előzetes, tervező dokumentuma)
@@ -12,8 +12,12 @@
 A dokumentum az AI Act Kontroll webalkalmazás tesztelésének tervét rögzíti: mit, miért és hogyan
 tesztelünk, milyen környezetben és eszközökkel, valamint mikor tekintjük a tesztelést késznek.
 
-A tesztelés célja annak igazolása, hogy az alkalmazás a specifikációban rögzített funkcionális és
-biztonsági követelményeknek megfelelően működik, és a hibák a fejlesztés/kiadás előtt kiderülnek.
+A tesztelés **két pilléren** áll:
+- **manuális tesztelés** – a teszteseteket emberi tesztelő hajtja végre és értékeli;
+- **automatizált tesztelés** – a visszatérő ellenőrzéseket kódolt tesztek futtatják, folyamatos integrációban.
+
+A cél annak igazolása, hogy az alkalmazás a specifikáció funkcionális és biztonsági követelményeinek
+megfelelően működik, és a hibák a kiadás előtt kiderülnek.
 
 ## 2. Tesztelendő rendszer
 
@@ -26,50 +30,67 @@ biztonsági követelményeknek megfelelően működik, és a hibák a fejleszté
 ## 3. Hatókör
 
 **Tesztelés tárgya (in scope):**
-- Funkcionális felületi (UI) folyamatok végponttól végpontig.
+- Funkcionális felhasználói folyamatok végponttól végpontig (manuálisan és automatizáltan).
 - Az adatréteg (Supabase REST/Auth) API-szintű ellenőrzése.
 - Jogosultság- és hozzáférés-kezelés (azonosítatlan/idegen módosítás tiltása).
 - Pozitív és negatív esetek, adatvezérelt és ismételt bevitel, lapozás.
 
 **Hatókörön kívül (out of scope):**
-- Terheléses/teljesítmény- és biztonsági penetrációs tesztelés.
+- Terheléses/teljesítmény- és penetrációs biztonsági tesztelés.
 - A Supabase és a Vercel infrastruktúrájának tesztelése (külső, megbízhatónak tekintett szolgáltatás).
 - Böngésző-kompatibilitási mátrix (a futtatás Chrome/Chromium alapú).
 
 ## 4. Tesztelési megközelítés
 
-**Tesztszintek:**
-- **Rendszer / E2E (UI):** valós böngészőben, Selenium WebDriverrel, a felhasználói folyamatok szintjén.
-- **Integráció (API):** a Supabase REST/Auth végpontok közvetlen ellenőrzése RestAssured-del.
-
-**Teszttípusok:**
-- Funkcionális tesztelés (a követelmények szerinti működés).
-- Regressziós tesztelés (a teljes suite minden CI-futáskor lefut).
-- Pozitív és negatív tesztek (helyes és hibás bemenetek).
-- Adatvezérelt és ismételt bevitel (paraméterezett esetek).
-- Jogosultsági/hozzáférési ellenőrzés (biztonsági jellegű funkcionális tesztek).
-
 **Módszertan:** specifikáció-alapú tesztelés, követelmény-azonosítókkal (pl. `LOGIN-REQ`, `AUTH-REQ`,
-`CREATE-REQ`, `EDIT-REQ`, `IMPORT-REQ`, `SESSION-REQ`, `SEC-REQ`, `API-REQ`). Minden teszt `@DisplayName`-je
-tartalmazza a lefedett követelmény és a manuális teszteset (MT-…) azonosítóját, így a teszt visszakövethető.
+`CREATE-REQ`, `EDIT-REQ`, `IMPORT-REQ`, `SESSION-REQ`, `SEC-REQ`, `API-REQ`). Minden teszteset
+visszavezethető egy követelményre; a megfeleltetést a [`teszt-dokumentacio`](teszt-dokumentacio) tartalmazza.
+
+**Teszttípusok (mindkét pillérre):** funkcionális, regressziós, pozitív és negatív, adatvezérelt/ismételt
+bevitel, valamint jogosultsági (biztonsági jellegű funkcionális) tesztelés.
+
+### 4.1 Manuális tesztelés
+
+- **Cél:** a felhasználói folyamatok emberi végigjátszása, a specifikációhoz mért ellenőrzése, és olyan
+  esetek feltárása, amelyekre az automatizálás nem tér ki.
+- **Módszer:**
+  - **Teszteset-alapú végrehajtás:** a manuális tesztesetek (MT-… azonosítók) lépésről lépésre,
+    a várt és a tapasztalt eredmény összevetésével.
+  - **Exploratív tesztelés:** irányított, de nem előre szkriptelt kipróbálás a peremesetek és a
+    használhatóság feltárására.
+- **Lefedett folyamatok:** regisztráció és megerősítés, bejelentkezés, adatkezelési nyilatkozat,
+  vezérlőpult-navigáció, rendszer felvitele/módosítása/törlése, import, lapozás, kijelentkezés.
+- **Dokumentálás:** a teszteset azonosítója, lépései, várt és tapasztalt eredmény, státusz (megfelelt/hibás),
+  hiba esetén a reprodukció leírása. Az eredmények a teszt-dokumentációban és a vezetői jelentésben összegződnek.
+- **Környezet:** valós böngésző (Chrome), a SUT éles Vercel-példánya.
+
+### 4.2 Automatizált tesztelés
+
+- **Cél:** a visszatérő, jól definiált ellenőrzések gyors, ismételhető futtatása – regresszió kiszűrése.
+- **Tesztszintek:**
+  - **Rendszer / E2E (UI):** valós böngészőben, **Selenium WebDriver**rel, a felhasználói folyamatok szintjén.
+  - **Integráció (API):** a Supabase REST/Auth végpontok közvetlen ellenőrzése **RestAssured**-del.
+- **Keretrendszer:** **JUnit 5**; a tesztek `@DisplayName`-je tartalmazza a lefedett követelmény és a
+  kapcsolódó manuális teszteset (MT-…) azonosítóját, így a manuális és az automata oldal összekapcsolódik.
+- **Futtatás:** helyben Mavennel, valamint **GitHub Actions CI**-ben minden `master`-re történő push és
+  pull request esetén (headless, `xvfb`; a `@Tag("gmail")` és `@Tag("flaky")` tesztek kizárva).
+- **Riport:** **Allure** tesztriport.
 
 ## 5. Tesztelt funkcióterületek
 
-| Terület | Példa követelmény-ID | Fő ellenőrzés |
-|---|---|---|
-| Bejelentkezés, adatkezelési nyilatkozat | LOGIN-REQ, PRIVACY-REQ | mezők, belépés, nyilatkozat, nyelvváltó |
-| Regisztráció + megerősítés | AUTH-REQ | regisztráció, e-mailes/admin-linkes megerősítés |
-| Vezérlőpult | DASH-REQ | modulkártyák láthatósága és navigáció |
-| Rendszerek listája, lapozás | SYSTEM-REQ | oldalanként max 5, nincs duplikáció/kihagyás |
-| Új rendszer felvitele | CREATE-REQ | létrehozás és mentés |
-| Módosítás | EDIT-REQ | átnevezés és a valódi változás ellenőrzése |
-| Törlés | EDIT-REQ | törlés és a tényleges eltűnés |
-| Import | IMPORT-REQ | sablon letöltése és importálása |
-| Felületről mentés | POLICY-REQ | szabályzat PDF/nyomtatás |
-| Kijelentkezés / munkamenet | SESSION-REQ | kilépés, védett oldal elérhetetlensége |
-| Jogosultság / adatszeparáció | SEC-REQ, API-REQ | idegen/azonosítatlan módosítás tiltott; szervezeti elkülönítés |
-
-A teljes teszteset–követelmény megfeleltetés a [`teszt-dokumentacio`](teszt-dokumentacio) fájlban található.
+| Terület | Példa követelmény-ID | Manuális | Automata |
+|---|---|:--:|:--:|
+| Bejelentkezés, adatkezelési nyilatkozat | LOGIN-REQ, PRIVACY-REQ | ✔ | ✔ (UI) |
+| Regisztráció + megerősítés | AUTH-REQ | ✔ | ✔ (UI) |
+| Vezérlőpult | DASH-REQ | ✔ | ✔ (UI) |
+| Rendszerek listája, lapozás | SYSTEM-REQ | ✔ | ✔ (UI) |
+| Új rendszer felvitele | CREATE-REQ | ✔ | ✔ (UI) |
+| Módosítás | EDIT-REQ | ✔ | ✔ (UI) |
+| Törlés | EDIT-REQ | ✔ | ✔ (UI) |
+| Import | IMPORT-REQ | ✔ | ✔ (UI) |
+| Felületről mentés | POLICY-REQ | ✔ | ✔ (UI) |
+| Kijelentkezés / munkamenet | SESSION-REQ | ✔ | ✔ (UI) |
+| Jogosultság / adatszeparáció | SEC-REQ, API-REQ | ✔ | ✔ (API) |
 
 ## 6. Környezet és eszközök
 
@@ -78,7 +99,8 @@ A teljes teszteset–követelmény megfeleltetés a [`teszt-dokumentacio`](teszt
 - **UI-automatizálás:** Selenium WebDriver (Chrome/Chromium)
 - **API-tesztelés:** RestAssured
 - **Riport:** Allure
-- **CI:** GitHub Actions (headless futtatás `xvfb`-vel; a `@Tag("gmail")` és `@Tag("flaky")` tesztek kizárva)
+- **CI:** GitHub Actions (headless futtatás `xvfb`-vel; `@Tag("gmail")` és `@Tag("flaky")` kizárva)
+- **Manuális futtatás:** valós böngésző (Chrome), a SUT éles példánya
 - **Backend hozzáférés a teszthez:** Supabase REST/Auth (seed és ellenőrzés)
 
 ## 7. Tesztadatok
@@ -93,14 +115,14 @@ A teljes teszteset–követelmény megfeleltetés a [`teszt-dokumentacio`](teszt
 
 - A SUT elérhető és stabil (Vercel deploy él).
 - A Supabase backend elérhető, a teszthez szükséges hozzáférés beállítva.
-- A build lefordul, a függőségek rendelkezésre állnak.
+- A build lefordul, a függőségek rendelkezésre állnak (automata futáshoz).
 
 ## 9. Kilépési kritériumok
 
-- A tervezett tesztesetek lefutottak.
-- A CI zöld: minden nem kizárt (`gmail`, `flaky`) teszt sikeres.
-- Az Allure riport elkészült, a hibák dokumentáltak.
-- A követelmény-lefedettség a traceability táblában igazolt.
+- A tervezett manuális és automata tesztesetek lefutottak.
+- A CI zöld: minden nem kizárt (`gmail`, `flaky`) automata teszt sikeres.
+- Az Allure riport elkészült; a manuális futás eredménye dokumentált.
+- A hibák dokumentáltak, a követelmény-lefedettség a traceability táblában igazolt.
 
 ## 10. Kockázatok és kezelésük
 
@@ -113,6 +135,7 @@ A teljes teszteset–követelmény megfeleltetés a [`teszt-dokumentacio`](teszt
 
 ## 11. Leszállítandók
 
+- Manuális teszteset-végrehajtás dokumentálva (eredmények).
 - Automatizált tesztkód (UI + API), a repóban.
 - Allure tesztriport.
 - Teszt-dokumentáció (teszteset–követelmény megfeleltetés).
@@ -121,9 +144,9 @@ A teljes teszteset–követelmény megfeleltetés a [`teszt-dokumentacio`](teszt
 
 ## 12. Ütemezés és felelős
 
-- **Felelős:** Varga Andrea (tesztek tervezése, fejlesztése, kiértékelése).
-- **Ütemezés:** a tesztek a fejlesztéssel párhuzamosan készültek; a regressziós suite minden
-  `master`-re történő push és pull request esetén automatikusan lefut a CI-ben.
+- **Felelős:** Varga Andrea (a tesztek tervezése, manuális végrehajtása, automatizálása, kiértékelése).
+- **Ütemezés:** a manuális ellenőrzés és az automatizálás a fejlesztéssel párhuzamosan készült; a
+  regressziós automata suite minden `master`-re történő push és pull request esetén automatikusan lefut.
 
 ## 13. Kapcsolódó dokumentumok
 
