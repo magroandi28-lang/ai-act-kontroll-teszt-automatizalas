@@ -9,6 +9,13 @@ import java.time.Duration;
 public class BelepesPom {
     private final WebDriver driver;
 
+    // Lokátorok: az oldal elemei, egy helyen.
+    private final By emailMezo = By.id("email");
+    private final By jelszoMezo = By.id("password");
+    private final By adatkezelesiJelolo = By.name("privacy");
+    private final By belepesGomb = By.className("bk-fo-gomb");
+    private final By magyarNyelvGomb = By.cssSelector("button[aria-label='Magyar']");
+
     public BelepesPom(WebDriver driver) {
         this.driver = driver;
     }
@@ -17,14 +24,14 @@ public class BelepesPom {
     public void belepes() {
         WebDriverWait varakozas = new WebDriverWait(driver, Duration.ofSeconds(15));
         driver.get(Konfig.alapUrl());
-        varakozas.until(ExpectedConditions.elementToBeClickable(By.id("email"))).sendKeys(Konfig.email());
-        driver.findElement(By.id("password")).sendKeys(Konfig.jelszo());
-        varakozas.until(ExpectedConditions.elementToBeClickable(By.name("privacy"))).click();
-        varakozas.until(ExpectedConditions.elementToBeClickable(By.className("bk-fo-gomb"))).click();
+        varakozas.until(ExpectedConditions.elementToBeClickable(emailMezo)).sendKeys(Konfig.email());
+        driver.findElement(jelszoMezo).sendKeys(Konfig.jelszo());
+        varakozas.until(ExpectedConditions.elementToBeClickable(adatkezelesiJelolo)).click();
+        varakozas.until(ExpectedConditions.elementToBeClickable(belepesGomb)).click();
         varakozas.until(ExpectedConditions.urlContains("/vezerlopult"));
     }
 
     public boolean nyelvvaltoLathato() {
-        return driver.findElement(By.cssSelector("button[aria-label='Magyar']")).isDisplayed();
+        return driver.findElement(magyarNyelvGomb).isDisplayed();
     }
 }
