@@ -6,7 +6,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
 
-public class BelepesPom {
+public class BelepesPage {
     private final WebDriver driver;
 
     // Lokátorok: az oldal elemei, egy helyen.
@@ -16,12 +16,12 @@ public class BelepesPom {
     private final By belepesGomb = By.className("bk-fo-gomb");
     private final By magyarNyelvGomb = By.cssSelector("button[aria-label='Magyar']");
 
-    public BelepesPom(WebDriver driver) {
+    public BelepesPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    // Belépés a teszt-fiókkal, a vezérlőpultig.
-    public void belepes() {
+    // Belépés a teszt-fiókkal; a végén átadja a vezérlőpult oldalát.
+    public VezerlopultPage belepes() {
         WebDriverWait varakozas = new WebDriverWait(driver, Duration.ofSeconds(15));
         driver.get(Konfig.alapUrl());
         varakozas.until(ExpectedConditions.elementToBeClickable(emailMezo)).sendKeys(Konfig.email());
@@ -29,6 +29,7 @@ public class BelepesPom {
         varakozas.until(ExpectedConditions.elementToBeClickable(adatkezelesiJelolo)).click();
         varakozas.until(ExpectedConditions.elementToBeClickable(belepesGomb)).click();
         varakozas.until(ExpectedConditions.urlContains("/vezerlopult"));
+        return new VezerlopultPage(driver);
     }
 
     public boolean nyelvvaltoLathato() {

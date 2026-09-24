@@ -16,13 +16,13 @@ import java.time.Duration;
 @DisplayName("Belépő oldal – Bejelentkezes és Adatkezelési nyilatkozat")
 public class BejelentkezesTest {
     private WebDriver driver;
-    private BelepesPom belepesOldal;
+    private BelepesPage belepesOldal;
 
     @BeforeEach
     void bongeszoEsOldalMegnyitasa() {
         driver = new ChromeDriver();
         driver.get(Konfig.alapUrl());
-        belepesOldal = new BelepesPom(driver);
+        belepesOldal = new BelepesPage(driver);
     }
 
     @Test
@@ -64,13 +64,13 @@ public class BejelentkezesTest {
         Assertions.assertTrue(jelolonegyzet.isDisplayed());
     }
 
-    @Test
+  @Test
     @DisplayName("MT-LOGIN-001 · LOGIN-REQ-001 – az adatkezelési jelölőnégyzet kijelölhető")
     void adatkezelesiJelolonegyzetKijelolheto() {
         WebElement jelolonegyzet = driver.findElement(By.name("privacy"));
         jelolonegyzet.click();
         Assertions.assertTrue(jelolonegyzet.isSelected());
-    }
+   }
 
     @Test
     @DisplayName("MT-LOGIN-001 · LOGIN-REQ-001 – a demó gomb látható")

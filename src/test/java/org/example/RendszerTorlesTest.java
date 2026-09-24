@@ -18,7 +18,7 @@ public class RendszerTorlesTest {
         SupabaseAdmin.seedTorles();
         SupabaseAdmin.rendszertBeszur("SEED-LAPOZAS-DEL-" + System.currentTimeMillis());
         driver = new ChromeDriver();
-        new BelepesPom(driver).belepes();
+        new BelepesPage(driver).belepes();
         varakozas = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 

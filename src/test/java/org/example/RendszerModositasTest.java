@@ -19,7 +19,7 @@ public class RendszerModositasTest {
         SupabaseAdmin.seedTorles();
         SupabaseAdmin.rendszertBeszur("SEED-LAPOZAS-MOD-" + System.currentTimeMillis());
         driver = new ChromeDriver();
-        new BelepesPom(driver).belepes();
+        new BelepesPage(driver).belepes();
         varakozas = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 

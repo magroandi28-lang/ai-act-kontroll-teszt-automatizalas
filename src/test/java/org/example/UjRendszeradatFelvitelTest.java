@@ -15,7 +15,7 @@ public class UjRendszeradatFelvitelTest {
     @BeforeEach
     void belepes() {
         driver = new ChromeDriver();
-        new BelepesPom(driver).belepes();
+        new BelepesPage(driver).belepes();
     }
 
     @Test

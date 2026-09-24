@@ -26,7 +26,7 @@ public class RendszerImportTest {
     void belepes() throws Exception {
         SupabaseAdmin.importTakaritas();      // korábbi IMPORT-TESZT-* rendszerek törlése
         driver = new ChromeDriver();
-        new BelepesPom(driver).belepes();
+        new BelepesPage(driver).belepes();
         varakozas = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 

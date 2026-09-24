@@ -20,7 +20,7 @@ public class KijelentkezesTest {
     @BeforeEach
     void belepesAVezerlopultra() {
         driver = new ChromeDriver();
-        new BelepesPom(driver).belepes();
+        new BelepesPage(driver).belepes();
         varakozas = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 

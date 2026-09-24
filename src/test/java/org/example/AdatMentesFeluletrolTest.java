@@ -17,7 +17,7 @@ public class AdatMentesFeluletrolTest {
     @BeforeEach
     void belepes() {
         driver = new ChromeDriver();
-        new BelepesPom(driver).belepes();
+        new BelepesPage(driver).belepes();
         varakozas = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
