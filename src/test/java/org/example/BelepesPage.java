@@ -28,7 +28,14 @@ public class BelepesPage {
         driver.findElement(jelszoMezo).sendKeys(Konfig.jelszo());
         varakozas.until(ExpectedConditions.elementToBeClickable(adatkezelesiJelolo)).click();
         varakozas.until(ExpectedConditions.elementToBeClickable(belepesGomb)).click();
-        varakozas.until(ExpectedConditions.urlContains("/vezerlopult"));
+        try {
+            varakozas.until(ExpectedConditions.urlContains("/vezerlopult"));
+        } catch (org.openqa.selenium.TimeoutException e) {
+            // Diagnosztika: mit mutat az oldal, amikor a belépés nem sikerül
+            String oldalSzoveg = driver.findElement(By.tagName("body")).getText();
+            System.err.println("BELEPES SIKERTELEN - oldal szovege:\n" + oldalSzoveg);
+            throw e;
+        }
         return new VezerlopultPage(driver);
     }
 
